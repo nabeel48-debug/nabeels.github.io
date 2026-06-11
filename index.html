@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nabeel S | Technical Support Expert</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // ─── REPLACE THESE THREE VALUES WITH YOUR EMAILJS CREDENTIALS ────────────
+  const EMAILJS_PUBLIC_KEY  = 'ptrkLBu6eB-BrRy1o';   // Account → API Keys
+  const EMAILJS_SERVICE_ID  = 'service_v1h31ci';   // Email Services → Service ID
+  const EMAILJS_TEMPLATE_ID = 'template_91ik9nn';  // Email Templates → Template ID
+  // ──────────────────────────────────────────────────────────────────────────
+  (function(){ emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY }); })();
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0a0a0a;
+    --bg2:       #111111;
+    --bg3:       #1a1a1a;
+    --green:     #00ff41;
+    --green-dim: #00cc33;
+    --green-glow:#00ff4133;
+    --muted:     #555;
+    --text:      #cccccc;
+    --text-dim:  #888888;
+    --border:    #222222;
+    --red:       #ff4444;
+    --yellow:    #ffcc00;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+  }
+
+  .nav-logo {
+    color: var(--green);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--text-dim); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 12px;
+    transition: color 0.2s;
+  }
+  .nav-links a::before { content: '> '; color: var(--muted); }
+  .nav-links a:hover { color: var(--green); }
+  .nav-links a:hover::before { color: var(--green); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 2rem 4rem;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .prompt-line {
+    color: var(--text-dim);
+    font-size: 12px;
+    margin-bottom: 2rem;
+  }
+  .prompt-line .user { color: var(--green); }
+  .prompt-line .host { color: var(--green-dim); }
+  .prompt-line .path { color: var(--text-dim); }
+
+  #boot-text {
+    font-size: clamp(13px, 1.5vw, 15px);
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+    min-height: 5.5em;
+  }
+  #boot-text .line { display: block; }
+  #boot-text .ok   { color: var(--green); }
+  #boot-text .warn { color: var(--yellow); }
+  #boot-text .err  { color: var(--red); }
+
+  #hero-name {
+    font-size: clamp(2rem, 5vw, 3.6rem);
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-shadow: 0 0 40px var(--green-glow);
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.6s;
+  }
+
+  #hero-role {
+    font-size: clamp(13px, 2vw, 16px);
+    color: var(--text-dim);
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    transition: opacity 0.6s 0.3s;
+  }
+  #hero-role .tag {
+    color: var(--green-dim);
+    margin-right: 0.5rem;
+  }
+
+  #hero-desc {
+    font-size: 14px;
+    color: var(--text);
+    max-width: 600px;
+    border-left: 2px solid var(--green);
+    padding-left: 1rem;
+    margin-bottom: 3rem;
+    opacity: 0;
+    transition: opacity 0.6s 0.6s;
+  }
+
+  .cta-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    transition: opacity 0.6s 0.9s;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.6rem 1.4rem;
+    font-family: inherit;
+    font-size: 12px;
+    text-decoration: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .btn-primary {
+    background: var(--green);
+    color: #000;
+    font-weight: 700;
+    border: 1px solid var(--green);
+  }
+  .btn-primary:hover {
+    background: transparent;
+    color: var(--green);
+    box-shadow: 0 0 16px var(--green-glow);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--green);
+    border: 1px solid var(--green);
+  }
+  .btn-ghost:hover {
+    background: var(--green-glow);
+    box-shadow: 0 0 16px var(--green-glow);
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 9px;
+    height: 1.1em;
+    background: var(--green);
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* SECTIONS */
+  section {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .section-label::before { content: '// '; color: var(--muted); }
+
+  h2 {
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 2.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+  .about-text p {
+    color: var(--text);
+    margin-bottom: 1rem;
+    font-size: 13.5px;
+  }
+  .about-text p:last-child { margin-bottom: 0; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+  .stat-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.1rem 1.2rem;
+  }
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--green);
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* EXPERIENCE - terminal window cards */
+  .exp-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .exp-card-titlebar {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 0.55rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .exp-card-title {
+    margin-left: 0.5rem;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+  .exp-card-body { padding: 1.4rem 1.6rem; }
+
+  .exp-company {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.2rem;
+  }
+  .exp-role {
+    font-size: 12px;
+    color: var(--green);
+    margin-bottom: 0.2rem;
+  }
+  .exp-date {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+  }
+  .exp-desc {
+    font-size: 13px;
+    color: var(--text);
+    padding-left: 0;
+    list-style: none;
+  }
+  .exp-desc li {
+    padding-left: 1.4rem;
+    position: relative;
+    margin-bottom: 0.4rem;
+    color: var(--text);
+  }
+  .exp-desc li::before {
+    content: '$';
+    position: absolute;
+    left: 0;
+    color: var(--green);
+  }
+
+  /* SKILLS GRID */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  .skill-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.2rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .skill-card:hover {
+    border-color: var(--green);
+    box-shadow: 0 0 12px var(--green-glow);
+  }
+  .skill-card-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+  .skill-card-name::before { content: '> '; }
+  .skill-card-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* CERTS */
+  .cert-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 1.2rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 0.7rem;
+    transition: border-color 0.2s;
+  }
+  .cert-row:hover { border-color: var(--green); }
+  .cert-badge {
+    font-size: 10px;
+    background: var(--green);
+    color: #000;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+  }
+  .cert-badge.wip {
+    background: transparent;
+    border: 1px solid var(--yellow);
+    color: var(--yellow);
+  }
+  .cert-name {
+    font-size: 13px;
+    color: var(--text);
+    flex: 1;
+  }
+  .cert-issuer {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  /* FAQ */
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+  }
+  .faq-q {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text);
+    padding: 1rem 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    transition: color 0.2s;
+  }
+  .faq-q::before { content: '> '; color: var(--green); flex-shrink: 0; }
+  .faq-q:hover { color: var(--green); }
+  .faq-toggle {
+    color: var(--muted);
+    font-size: 16px;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .faq-item.open .faq-toggle { transform: rotate(45deg); color: var(--green); }
+  .faq-a {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    padding: 0 0 1rem 1.5rem;
+    display: none;
+    line-height: 1.8;
+  }
+  .faq-item.open .faq-a { display: block; }
+
+  /* CONTACT */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  .contact-text {
+    font-size: 13.5px;
+    color: var(--text);
+    margin-bottom: 2rem;
+  }
+  .contact-link-list { list-style: none; }
+  .contact-link-list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12.5px;
+  }
+  .contact-link-list li:last-child { border-bottom: none; }
+  .contact-link-list a {
+    color: var(--green);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .contact-link-list a:hover { opacity: 0.75; }
+  .contact-link-list .label { color: var(--text-dim); margin-right: 0.5rem; }
+
+  .terminal-form {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .terminal-form-bar {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 0.55rem 1rem;
+    font-size: 11px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .terminal-form-body { padding: 1.4rem; }
+  .tf-field { margin-bottom: 1rem; }
+  .tf-label {
+    font-size: 11px;
+    color: var(--green);
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  .tf-label::before { content: '$ '; color: var(--muted); }
+  .tf-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    padding: 0.6rem 0.8rem;
+    border-radius: 3px;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  .tf-input:focus { border-color: var(--green); box-shadow: 0 0 8px var(--green-glow); }
+  .tf-input::placeholder { color: var(--muted); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  footer span { color: var(--green); }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .about-grid,
+    .contact-grid { grid-template-columns: 1fr; }
+    nav { padding: 0 1rem; }
+    .nav-links { gap: 1.2rem; }
+    section { padding: 4rem 1rem; }
+    #hero { padding: 5rem 1rem 3rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor { animation: none; opacity: 1; }
+    #hero-name, #hero-role, #hero-desc, .cta-group { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#hero"><span>~/</span>nabeel s</a>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#experience">experience</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#certs">certs</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero" style="border-top:none;">
+  <div class="prompt-line">
+    <span class="user">nabeel s</span><span style="color:var(--muted)">@</span><span class="host">kaseya-support</span><span style="color:var(--muted)">:</span><span class="path">~</span><span style="color:var(--muted)">$ ./init.sh</span>
+  </div>
+
+  <div id="boot-text" aria-live="polite"></div>
+
+  <h1 id="hero-name">Nabeel S<span style="color:var(--text-dim);"></span></h1>
+  <p id="hero-role">
+    <span class="tag">[role]</span>Technical Support Expert &nbsp;|&nbsp;
+    <span class="tag">[loc]</span>Bangalore, IN
+  </p>
+  <p id="hero-desc">
+    I investigate what's broken, trace it to the root, and make sure it doesn't break again.
+    Enterprise RMM • PSA • REST APIs • OAuth • SSO • Networking • Cloud • Automation - if it has logs, I'll find the answer.
+  </p>
+  <div class="cta-group">
+    <a href="#experience" class="btn btn-primary">View Experience</a>
+    <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">about</div>
+  <h2>Who am I?</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>
+        I'm a Technical Support Expert at Kaseya, specializing in Pulseway RMM,
+        with a support scope that spans VSA, PSA, BMS, and Datto RMM. Before Kaseya,
+        I was at DXC Technology as a Senior Technical Support Engineer.
+      </p>
+      <p>
+        My work is a mix of deep log analysis, network troubleshooting, authentication
+        forensics, and translating complex product failures into clear, actionable fixes
+        for customers and engineering teams.
+      </p>
+      <p>
+        Outside of work I'm sharpening cybersecurity skills through hands-on courses,
+        building automation wherever I find repetition, and maintaining a healthy
+        respect for the CCNA I hold and the CCNP I'm chasing.
+      </p>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box">
+        <div class="stat-num">2.5+</div>
+        <div class="stat-label">Years in Enterprise Support</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">5+</div>
+        <div class="stat-label">Product Platforms Supported</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">4000+</div>
+        <div class="stat-label">Tickets Resolved</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">#1</div>
+        <div class="stat-label">Gold Star CSAT @ Kaseya</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">85%</div>
+        <div class="stat-label">Same-Day Resolution</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Regions Supported (APAC · EMEA · NAM)</div>
+      </div>
+      <div class="stat-box" style="grid-column: span 2;">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Logs Analyzed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-label">experience</div>
+  <h2>Places I've Worked</h2>
+
+  <div class="exp-card">
+    <div class="exp-card-titlebar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <span class="exp-card-title">kaseya.sh — active session</span>
+    </div>
+    <div class="exp-card-body">
+      <div class="exp-company">Kaseya</div>
+      <div class="exp-role">Technical Support Expert — Pulseway RMM</div>
+      <div class="exp-date">Sept 2024 – Present &nbsp;|&nbsp; Bangalore, IN</div>
+      <ul class="exp-desc">
+        <li>Primary specialist for Pulseway RMM across a global customer base</li>
+        <li>Support scope spans VSA, PSA, BMS, Pulseway, and Datto RMM</li>
+        <li>Root cause analysis for complex agent, server-side, and integration failures</li>
+        <li>Workflow scripting, automation, and Pulseway API troubleshooting</li>
+        <li>Cross-functional collaboration with engineering on escalated defects</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-card-titlebar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <span class="exp-card-title">dxc.sh — session closed</span>
+    </div>
+    <div class="exp-card-body">
+      <div class="exp-company">DXC Technology</div>
+      <div class="exp-role">Senior Technical Support Engineer</div>
+      <div class="exp-date">Nov 2022 – Apr 2023 &nbsp;|&nbsp; Bangalore, IN</div>
+      <ul class="exp-desc">
+        <li>Enterprise IT support across networking, endpoints, and access management</li>
+        <li>Resolved escalated incidents involving AD, VPN, DNS, and infrastructure</li>
+        <li>Reduced repeat incident volume through documentation and knowledge base work</li>
+        <li>Mentored junior analysts on structured troubleshooting methodology</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">skills</div>
+  <h2>My Toolbox</h2>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-card-name">Networking & Connectivity</div>
+      <div class="skill-card-desc">DNS, TCP/IP, SSL/TLS, VPN, routing, switching, packet analysis, CCNA-level diagnostics.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-name">RMM & MSP Platforms</div>
+      <div class="skill-card-desc">Pulseway, Kaseya VSA, Datto RMM — agent deployment, workflows, automation, integrations.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-name">Identity & Access</div>
+      <div class="skill-card-desc">Active Directory, SSO, OAuth 2.0, SAML, MFA, authentication flow troubleshooting.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-name">Cloud & SaaS</div>
+      <div class="skill-card-desc">Microsoft 365, Azure, enterprise SaaS administration and integration support.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-name">Log Analysis & RCA</div>
+      <div class="skill-card-desc">Event logs, IIS logs, agent crash dumps, traces — follow evidence, skip assumptions.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-name">Scripting & Automation</div>
+      <div class="skill-card-desc">PowerShell, Pulseway workflow, REST API testing, task chaining with variable passing.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-name">Cybersecurity</div>
+      <div class="skill-card-desc">Active learner — hands-on coursework in ethical hacking, network security, and defensive practices.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-name">Customer Engineering</div>
+      <div class="skill-card-desc">Translate customer-facing failures into engineering-ready bug reports; close the loop between support and product.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTS -->
+<section id="certs">
+  <div class="section-label">certifications</div>
+  <h2>Credentials</h2>
+
+  <div class="cert-row">
+    <span class="cert-badge">IN PROGRESS</span>
+    <span class="cert-name">Cisco Certified Network Associate (CCNA)</span>
+    <span class="cert-issuer">Cisco</span>
+  </div>
+  <div class="cert-row">
+    <span class="cert-badge wip">IN PROGRESS</span>
+    <span class="cert-name">Red Hat Certified System Administrator (RHCSA)</span>
+    <span class="cert-issuer">Red Hat</span>
+  </div>
+  <div class="cert-row">
+    <span class="cert-badge wip">LEARNING</span>
+    <span class="cert-name">Microsoft AZ-104 Azure </span>
+    <span class="cert-issuer">Hands-on coursework</span>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-label">faq</div>
+  <h2>Things I've Been Asked</h2>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">What do you enjoy most about this work? <span class="faq-toggle">+</span></button>
+    <div class="faq-a">Problems that require real curiosity. The ones where the logs contradict the error message, the customer swears nothing changed, and yet something clearly did. Those are the ones I remember.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">What's your debugging strategy? <span class="faq-toggle">+</span></button>
+    <div class="faq-a">Follow the evidence → ignore assumptions → trust the logs. In that order, every time. The customer's description is a starting point, not a conclusion.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">What technologies do you work with? <span class="faq-toggle">+</span></button>
+    <div class="faq-a">Networking, cloud platforms, enterprise RMM/PSA applications, authentication systems, Linux and Windows infrastructure — and whatever decides to break next.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">What's your biggest strength? <span class="faq-toggle">+</span></button>
+    <div class="faq-a">Staying methodical when production environments are on fire. Panic makes bad diagnosticians. Calm, structured investigation finds the real root cause.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">Dark mode or light mode? <span class="faq-toggle">+</span></button>
+    <div class="faq-a">You're looking at it.</div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">contact</div>
+  <h2>Get in Touch</h2>
+  <div class="contact-grid">
+    <div>
+      <p class="contact-text">
+        Open to interesting conversations — technical deep dives, career opportunities,
+        or anything where something is broken and nobody knows why yet.
+      </p>
+      <ul class="contact-link-list">
+        <li><span class="label">location</span> Bangalore, India</li>
+        <li><span class="label">linkedin</span> <a href="https://linkedin.com/in/" target="_blank">https://www.linkedin.com/in/nabeels48</a></li>
+        <li><span class="label">email</span> <a href="mailto:mailnabeel48@gmail.com">mailnabeel48@gmail.com</a></li>
+		<li><span class="label">phone</span> <a href="phone: +91 9087055806">+91 9087055806</a></li>
+      </ul>
+    </div>
+    <div class="terminal-form">
+      <div class="terminal-form-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        &nbsp;send_message.sh
+      </div>
+      <div class="terminal-form-body">
+        <div id="form-output" style="display:none;margin-bottom:1rem;font-size:12px;padding:0.7rem 1rem;border-radius:3px;"></div>
+        <div class="tf-field">
+          <label class="tf-label" for="tf-name">name</label>
+          <input class="tf-input" id="tf-name" type="text" placeholder="your name" autocomplete="off">
+        </div>
+        <div class="tf-field">
+          <label class="tf-label" for="tf-email">email</label>
+          <input class="tf-input" id="tf-email" type="email" placeholder="your@email.com" autocomplete="off">
+        </div>
+        <div class="tf-field">
+          <label class="tf-label" for="tf-phone" style="display:flex;align-items:center;gap:0.5rem;">phone <span style="color:var(--muted);font-size:10px;letter-spacing:0.05em;">(optional)</span></label>
+          <input class="tf-input" id="tf-phone" type="tel" placeholder="+91 XXXXX XXXXX" autocomplete="off">
+        </div>
+        <div class="tf-field">
+          <label class="tf-label" for="tf-msg">message</label>
+          <textarea class="tf-input" id="tf-msg" rows="4" placeholder="open to discuss new ideas and opportunities!"></textarea>
+        </div>
+        <button id="send-btn" class="btn btn-primary" style="font-size:12px;border:none;cursor:pointer;" onclick="sendMessage()">
+          ./send &nbsp;<span class="cursor" style="width:6px;height:0.9em;"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>built by <span>nabeel</span> &nbsp;·&nbsp; bangalore &nbsp;·&nbsp; <span>2026</span></p>
+</footer>
+
+<script>
+// Boot sequence typewriter
+
+const bootLines = [
+  { text: '[  OK  ] Connecting to managed endpoints...', cls: 'ok' },
+  { text: '[  OK  ] Loading automation workflows...', cls: 'ok' },
+  { text: '[ WARN ] Ticket marked: "Urgent".', cls: 'warn' },
+  { text: '[  OK  ] Reproducing the issue...', cls: 'ok' },
+  { text: '[  OK  ] Root cause identified.', cls: 'ok' },
+  { text: '[  OK  ] Nabeel is ready to troubleshoot.', cls: 'ok' }
+];
+
+const bootEl = document.getElementById('boot-text');
+const nameEl = document.getElementById('hero-name');
+const roleEl = document.getElementById('hero-role');
+const descEl = document.getElementById('hero-desc');
+const ctaEl  = document.querySelector('.cta-group');
+
+let lineIdx = 0;
+let charIdx = 0;
+let currentSpan = null;
+
+function typeChar() {
+  if (lineIdx >= bootLines.length) {
+    // Reveal hero elements
+    nameEl.style.opacity = 1;
+    roleEl.style.opacity = 1;
+    descEl.style.opacity = 1;
+    ctaEl.style.opacity  = 1;
+    return;
+  }
+  const line = bootLines[lineIdx];
+  if (charIdx === 0) {
+    currentSpan = document.createElement('span');
+    currentSpan.className = 'line ' + line.cls;
+    bootEl.appendChild(currentSpan);
+  }
+  currentSpan.textContent = line.text.slice(0, charIdx + 1);
+  charIdx++;
+  if (charIdx < line.text.length) {
+    setTimeout(typeChar, 5);
+  } else {
+    lineIdx++;
+    charIdx = 0;
+    setTimeout(typeChar, 50);
+  }
+}
+
+// Start after short delay
+setTimeout(typeChar, 50);
+
+// FAQ toggle
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+// ── Contact Form ─────────────────────────────────────────────────────────────
+function setFormOutput(msg, type) {
+  const el = document.getElementById('form-output');
+  el.style.display = 'block';
+  el.textContent = msg;
+  if (type === 'success') {
+    el.style.background = '#001a00';
+    el.style.border = '1px solid var(--green)';
+    el.style.color = 'var(--green)';
+  } else if (type === 'error') {
+    el.style.background = '#1a0000';
+    el.style.border = '1px solid var(--red)';
+    el.style.color = 'var(--red)';
+  } else {
+    el.style.background = '#111';
+    el.style.border = '1px solid var(--muted)';
+    el.style.color = 'var(--text-dim)';
+  }
+}
+
+async function sendMessage() {
+  const name    = document.getElementById('tf-name').value.trim();
+  const email   = document.getElementById('tf-email').value.trim();
+  const phone   = document.getElementById('tf-phone').value.trim();
+  const message = document.getElementById('tf-msg').value.trim();
+  const btn     = document.getElementById('send-btn');
+
+  // Validation
+  if (!name || !email || !message) {
+    setFormOutput('[ ERROR ] All fields are required.', 'error');
+    return;
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    setFormOutput('[ ERROR ] Invalid email address.', 'error');
+    return;
+  }
+  if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+    setFormOutput('[ ERROR ] EmailJS keys not configured yet. Open the HTML file and replace YOUR_PUBLIC_KEY, YOUR_SERVICE_ID, YOUR_TEMPLATE_ID.', 'error');
+    return;
+  }
+
+  // Sending state
+  btn.disabled = true;
+  btn.textContent = '[ ... ] Transmitting...';
+  setFormOutput('[ INFO ] Establishing connection...', 'info');
+
+  try {
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      from_name:  name,
+      from_email: email,
+      phone:      phone || 'Not provided',
+      message:    message,
+      reply_to:   email,
+    });
+
+    // Clear fields
+    document.getElementById('tf-name').value  = '';
+    document.getElementById('tf-email').value = '';
+    document.getElementById('tf-phone').value = '';
+    document.getElementById('tf-msg').value   = '';
+
+    setFormOutput('[ OK ] Message transmitted successfully. I\'ll get back to you soon!', 'success');
+    btn.textContent = '[ OK ] Sent ✓';
+
+  } catch (err) {
+    console.error('EmailJS error:', err);
+    setFormOutput('[ ERROR ] Transmission failed. Please email me directly at mailnabeel48@gmail.com', 'error');
+    btn.disabled = false;
+    btn.innerHTML = './send &nbsp;<span class="cursor" style="width:6px;height:0.9em;"></span>';
+  }
+}
+</script>
+</body>
+</html>
